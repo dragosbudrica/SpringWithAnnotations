@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+	<Properties>
+		<Property name="log_dir">@APP_LOG_DIR@</Property>
+		<Property name="log_file">@APP_LOG_FILE@</Property>
+		<Property name="app_log_mode">@APP_LOG_MODE@</Property>
+		<Property name="sql_log_mode">@SQL_LOG_MODE@</Property>
+		<Property name="root_log_mode">@ROOT_LOG_MODE@</Property>
+		<Property name="console_log_mode">@CONSOLE_LOG_MODE@</Property>
+		<Property name="pattern_layout">%d{yyyy-MM-dd HH:mm:ss} [%t] %-5p %c %M - %m%n</Property>
+		<Property name="max_file_size">100 MB</Property>
+	</Properties>
+
+	<Appenders>
+		<!-- Console Appender -->
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="${pattern_layout}" />
+			<ThresholdFilter level="${console_log_mode}" onMatch="ACCEPT" onMismatch="DENY"/>
+		</Console>
+
+		<!-- Daily Rolling File Appender -->
+		<RollingFile name="File" fileName="${log_dir}/${log_file}.log" filePattern="${log_dir}/${log_file}.%d{yyyy-MM-dd}.%i.log">
+			<PatternLayout pattern="${pattern_layout}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="${max_file_size}" />
+			</Policies>
+		</RollingFile>
+	</Appenders>
+	
+	<Loggers>
+		<Logger name="com.givaudan" level="${app_log_mode}" />
+		
+		<Logger name="java.sql.PreparedStatement" level="${app_log_mode}" />
+
+		<Logger name="java.sql.Statement" level="${app_log_mode}" />
+
+		<Logger name="java.sql.Connection" level="${app_log_mode}" />
+
+ 		<Root level="${root_log_mode}">
+			<AppenderRef ref="File" />
+			<AppenderRef ref="Console" />
+		</Root>
+	</Loggers>
+</Configuration>
